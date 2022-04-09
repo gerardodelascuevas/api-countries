@@ -51,6 +51,9 @@ const getDbInfo = async ()=> {
 //         res.send(information)
 //     } catch(e) {console.log(e)}
 // })
+router.get('/favicon.ico', (req, res)=> {
+    res.send('favicon.ico')
+})
 router.get('/', async (req, res)=> {
     const {name} = req.query
   const dbinfo = await allCountries()
