@@ -51,6 +51,45 @@ const getDbInfo = async ()=> {
 //         res.send(information)
 //     } catch(e) {console.log(e)}
 // })
+router.get('/', async (req, res)=> {
+    const {name} = req.query
+  const dbinfo = await allCountries()
+    dbinfo.map(x=> {
+                try { Countries.findOrCreate({
+                        where: {
+                            id: typeof x.id == 'string' ? x.id : x.name.slice(0, 3).toUpperCase(),
+                            name: x.name,
+                            capital: x.capital ? x.capital : "We don't have a capital",
+                            continent: x.continent,
+                            superficie: x.superficie,
+                            flag: x.flag,
+                            population: x.population,
+                            subregion: x.subregion ? x.subregion : "Sorry we don't have data",                             
+                        }     
+                })                   
+                } catch(e) {console.log(e)}
+              })
+             const infodedatabase = await getDbInfo()
+    if(name){
+        let myCountry = await axios.get(`https://restcountries.com/v3/name/${name}`)
+        myCountry = myCountry.data[0]
+      
+        const myData = {
+            id: myCountry.fifa ? myCountry.fifa : myCountry.name.common,//.splice(0,3).toUpperCase(),
+            name: myCountry.name.common,
+            capital: myCountry.capital ? myCountry.capital[0] : "Sorry we don't have a capital",
+            continent: myCountry.region,
+            languages: myCountry.languages,
+            superficie: myCountry.area,
+            flag: myCountry.flags[0],
+           population: myCountry.population,
+           subregion: myCountry.subregion,
+        }
+        res.send(myData)
+    }     
+    
+     else res.send(infodedatabase)    
+})
 
 router.get('/country', async (req, res)=> {
     const {name} = req.query
